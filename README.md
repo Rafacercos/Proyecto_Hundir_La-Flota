@@ -14,11 +14,11 @@ Un juego de estrategia donde los jugadores intentan hundir los barcos del oponen
 
 1. Clona el repositorio:
    ```sh
-   git clone https://github.com/usuario/hundir-la-flota.git
+   git clone https://github.com/Rafacercos/Proyecto_Hundir_La-Flota.git
    ```
 2. Accede al directorio:
    ```sh
-   cd hundir-la-flota
+   cd Proyecto_Hundir_La-Flota.git
    ```
 3. Instala las dependencias:
    ```sh
