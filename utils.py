@@ -38,11 +38,6 @@ def crear_barco_aleatorio(eslora):
             barco_aleatorio.append((fila, columna))
     return barco_aleatorio
 
-def crear_lista_barcos(lista_esloras=[2,2,2,3,3,4]):
-    lista_barcos = []
-    for i in lista_esloras:
-        lista_barcos.append(crear_barco_aleatorio(i))
-    return lista_barcos
 
 def colocar_barcos_random(tablero):
     lista_barcos=crear_lista_barcos()
@@ -101,8 +96,8 @@ def pedir_datos_barco():
             eslora = int(input("Selecciona tu eslora entre 2 ,3 y 4"))
             orientacion = input("Introduce una orientacion entre horizontal/vertical")
             lista_barco = [eslora,fila,columna,orientacion]
-            if fila <= 0 or columna <= 0:
-                print("El número no puede ser 0 o menor, vuelve a introducir los valores")
+            if fila < 0 or columna < 0:
+                print("El número no puede  menor que 0, vuelve a introducir los valores")
                 continue
             if eslora != 2 and eslora != 3 and eslora != 4 :
                 print("La eslora debe ser un valor entre 2 y 4 (Ambos incluidos)")
@@ -113,6 +108,7 @@ def pedir_datos_barco():
             return lista_barco
         except:
              print("Ha ocurrido un error, vuelve a introducir los valores")
+
 
 def ajustar_posicion_inicial(lista_barco):
     posicion_inicial = (lista_barco[1],lista_barco[2])
@@ -139,3 +135,16 @@ def crear_barco(lista_barco):
         else:
             print("Ha habido un error")
     return barco
+
+def generacion_barcos():
+    tablero = crear_tablero()
+    total_barcos = 0
+    while total_barcos < 6:
+        lista_barco = pedir_datos_barco()
+        ajustar_posicion_inicial(lista_barco)
+        barco = crear_barco(lista_barco)
+        colocar_barco(barco, tablero)
+        tablero = colocar_barco(barco, tablero)
+        print(f"Asi queda tu tablero: \n {tablero}")
+        total_barcos += 1
+    return tablero
