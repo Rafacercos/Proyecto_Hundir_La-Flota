@@ -18,33 +18,6 @@ def disparar(casilla, tablero):
         tablero[casilla]  = "A"
     return tablero
 
-def crear_barco_aleatorio(eslora):
-    fila = random.randint(0,9)
-    columna = random.randint(0,9)
-    orientacion = random.choice(["Horizontal", "Vertical"])
-    if orientacion == "Horizontal":
-        columna = random.randint (0,9 - eslora)
-        fila = random.randint(0,9)
-    elif orientacion == "Vertical" :
-        fila = random.randint (0,9 - eslora)
-        columna = random.randint(0,9)
-    barco_aleatorio = [(fila, columna)]
-    while len(barco_aleatorio) < eslora:
-        if orientacion == "Horizontal":
-            columna = columna + 1
-            barco_aleatorio.append((fila, columna))
-        else:
-            fila = fila + 1
-            barco_aleatorio.append((fila, columna))
-    return barco_aleatorio
-
-
-def colocar_barcos_random(tablero):
-    lista_barcos=crear_lista_barcos()
-    for barco in lista_barcos:
-        colocar_barco(barco,tablero)
-    return(tablero)
-
 def pedir_tamaño():
     while True:
         try:
@@ -61,32 +34,7 @@ def pedir_tamaño():
         except:
              print("Los números deben ser enteros. Prueba a introducirlos otra vez sin decimales")
 
-def elegir_posicion(tablero):
-    while True:
-        try:
-            colocar_barcos_random(tablero)
-            print(tablero)
-            mensaje= input("¿Te gusta como están colocados tus barcos?, recuerda que no pueden superponerse, si es asi escribe `no´")
-            if mensaje.lower() == "no":
-                limpiar_tablero(tablero)
-                print("Ahora recolocamos tus barcos")
-                continue
-            elif mensaje.lower() == "si":
-                print("La colocación de tus barcos es:")
-                print (tablero)
-                return tablero
-            else:
-                print("respuesta no valida. Responde Si o No")
-        except Exception as e:
-            print ("ha habido un error, vuelve a generar tus barcos")
-
-
-def limpiar_tablero(tablero):
-    for i in range(len(tablero)):
-        for x in range(len(tablero[i])):
-            if tablero [i][x] == "O":
-                tablero[i][x]= "_"
-    return tablero
+#------------------------------------------FUNCIONES USUARIO----------------------------------------------------------
 
 def pedir_datos_barco():
     while True:
@@ -115,7 +63,7 @@ def ajustar_posicion_inicial(lista_barco):
     if lista_barco [3].lower()== "horizontal" and lista_barco[2] >= 6:
         posicion_inicial = (lista_barco[1], lista_barco[2] - lista_barco[0])
         return posicion_inicial
-    elif lista_barco [3].lower() == "vertical" and lista_barco[0]>= 6:
+    elif lista_barco [3].lower() == "vertical" and lista_barco[1]>= 6:
         posicion_inicial = (lista_barco[1] - lista_barco[0], lista_barco[2])
         return posicion_inicial
     else:
@@ -135,7 +83,6 @@ def crear_barco(lista_barco):
         else:
             print("Ha habido un error")
     return barco
-
 def generacion_barcos():
     tablero = crear_tablero()
     total_barcos = 0
@@ -148,3 +95,106 @@ def generacion_barcos():
         print(f"Asi queda tu tablero: \n {tablero}")
         total_barcos += 1
     return tablero
+
+#-----------------------------------------------FUNCIONES MAQUINA--------------------------------------------------------
+
+def datos_barco_maquina():
+    fila_aleatoria = random.randint(0,9)
+    columna_aleatoria = random.randint(0,9)
+    valores_eslora = [2,3,4]
+    frecuencia = [3,2,1]
+    orientacion = random.choice(["horizontal", "vertical"])
+    eslora = random.choices(valores_eslora, weights = frecuencia, k=1)[0]
+    lista_barco_maquina = [eslora, fila_aleatoria,columna_aleatoria,orientacion]
+    return lista_barco_maquina
+
+def ajustar_posicion_inicial_maquina(lista_barco_maquina):
+    posicion_inicial_maquina = (lista_barco_maquina[1],lista_barco_maquina[2])
+    if lista_barco_maquina [3].lower()== "horizontal" and lista_barco_maquina[2] >= 6:
+        posicion_inicial_maquina = (lista_barco_maquina[1], lista_barco_maquina[2] - lista_barco_maquina[0])
+        return posicion_inicial_maquina
+    elif lista_barco_maquina [3].lower() == "vertical" and lista_barco_maquina[1]>= 6:
+        posicion_inicial_maquina = (lista_barco_maquina[1] - lista_barco_maquina[0], lista_barco_maquina[2])
+        return posicion_inicial_maquina
+    else:
+        posicion_inicial_maquina = (lista_barco_maquina[1],lista_barco_maquina[2])
+        return posicion_inicial_maquina
+
+def generacion_barcos_maquina():
+    tablero_maquina = crear_tablero()
+    total_barcos = 0
+    while total_barcos < 6:
+        lista_barco_maquina = datos_barco_maquina()
+        ajustar_posicion_inicial_maquina(lista_barco_maquina)
+        barco = crear_barco(lista_barco_maquina)
+        colocar_barco(barco, tablero_maquina)
+        tablero_maquina = colocar_barco(barco, tablero_maquina)
+        total_barcos += 1
+    return tablero_maquina
+#--------------------------------------DISPAROS USUARIO---------------------------------------------------------------
+
+def pedir_coordenadas():
+    fila = int(input("En qué fila (0-9) quieres disparar?"))
+    columna = int(input("En que columna (0-9) quieres disparar?"))
+    coordenada = (fila,columna)
+    return coordenada
+tablero_visual = crear_tablero()
+def disparar_usuario():
+    coordenada = pedir_coordenadas()
+    tablero_maquina = generacion_barcos_maquina()
+    if tablero_maquina[coordenada] == "O":
+        print("Acertaste")
+        tablero_visual[coordenada] = "X"
+        print(tablero_visual)
+        resultado = "X"
+    else:
+        print("Fallaste")
+        tablero_visual[coordenada]  = "A"
+        print(tablero_visual)
+        resultado = "A"
+    if resultado == "X":
+        return disparar_usuario()
+    return tablero_visual,resultado
+#----------------------------------DISPAROS MAQUINA-----------------------------------------------------------
+tablero_usuario = generacion_barcos()
+def pedir_coordenadas_maquina():
+    fila = random.randint(0,9)
+    columna = random.randint(0,9)
+    coordenada = (fila,columna)
+    return coordenada
+
+def disparar_maquina():
+    coordenada = pedir_coordenadas_maquina()
+    if tablero_usuario[coordenada] == "O":
+        print("Acertaste")
+        tablero_usuario[coordenada] = "X"
+        print(tablero_usuario)
+        resultado = "X"
+    else:
+        print("Fallaste")
+        tablero_usuario[coordenada]  = "A"
+        print(tablero_usuario)
+        resultado = "A"
+    if resultado == "X":
+        return disparar_maquina()
+    return tablero_usuario,resultado
+#------------------------------------------DISPAROS GENERAL----------------------------------------------------
+def disparar_general():
+    coordenada = pedir_coordenadas()
+    tablero_maquina = generacion_barcos_maquina()
+    if tablero_maquina[coordenada] == "O":
+        print("Acertaste")
+        tablero_visual[coordenada] = "X"
+        print(tablero_visual)
+        resultado = "X"
+    else:
+        print("Fallaste")
+        tablero_visual[coordenada]  = "A"
+        print(tablero_visual)
+        resultado = "A"
+    if resultado == "X":
+        return disparar_usuario()
+    elif resultado == "A":
+        return disparar_maquina()
+    return tablero_visual,resultado
+ 
