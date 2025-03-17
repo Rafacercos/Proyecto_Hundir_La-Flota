@@ -6,4 +6,6 @@ print("Tu tablero ya esta ahora danos un momento para generar el tablero del opo
 tablero_maquina = generacion_barcos_maquina()
 tablero_visual = crear_tablero()
 print(f"Este es tu tablero:\n {tablero_usuario} \n y este es el tablero del contrincante: \n {tablero_visual}")
-disparar_usuario()
+disparar_general(tablero_maquina)
+    
+

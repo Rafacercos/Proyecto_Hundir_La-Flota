@@ -139,9 +139,8 @@ def pedir_coordenadas():
     coordenada = (fila,columna)
     return coordenada
 tablero_visual = crear_tablero()
-def disparar_usuario():
+def disparar_usuario(tablero_maquina):
     coordenada = pedir_coordenadas()
-    tablero_maquina = generacion_barcos_maquina()
     if tablero_maquina[coordenada] == "O":
         print("Acertaste")
         tablero_visual[coordenada] = "X"
@@ -152,36 +151,32 @@ def disparar_usuario():
         tablero_visual[coordenada]  = "A"
         print(tablero_visual)
         resultado = "A"
-    if resultado == "X":
-        return disparar_usuario()
     return tablero_visual,resultado
 #----------------------------------DISPAROS MAQUINA-----------------------------------------------------------
-tablero_usuario = generacion_barcos()
 def pedir_coordenadas_maquina():
     fila = random.randint(0,9)
     columna = random.randint(0,9)
     coordenada = (fila,columna)
     return coordenada
 
-def disparar_maquina():
+def disparar_maquina(tablero_usuario):
     coordenada = pedir_coordenadas_maquina()
     if tablero_usuario[coordenada] == "O":
         print("Acertaste")
         tablero_usuario[coordenada] = "X"
         print(tablero_usuario)
         resultado = "X"
+        return disparar_maquina(tablero_usuario)
     else:
         print("Fallaste")
         tablero_usuario[coordenada]  = "A"
         print(tablero_usuario)
         resultado = "A"
-    if resultado == "X":
-        return disparar_maquina()
+    
     return tablero_usuario,resultado
 #------------------------------------------DISPAROS GENERAL----------------------------------------------------
-def disparar_general():
+def disparar_general(tablero_maquina):
     coordenada = pedir_coordenadas()
-    tablero_maquina = generacion_barcos_maquina()
     if tablero_maquina[coordenada] == "O":
         print("Acertaste")
         tablero_visual[coordenada] = "X"
@@ -192,9 +187,44 @@ def disparar_general():
         tablero_visual[coordenada]  = "A"
         print(tablero_visual)
         resultado = "A"
+    juego_terminado()
     if resultado == "X":
         return disparar_usuario()
     elif resultado == "A":
         return disparar_maquina()
     return tablero_visual,resultado
+
+
+def juego_terminado():
+    tablero_maquina = generacion_barcos_maquina()
+    tablero_usuario = generacion_barcos()
+    for fila in tablero_maquina:
+        if "O" in fila:
+            break
+    else:
+        print("¡Felicidades!¡Ganaste!")
+        exit() 
+
+    for fila in tablero_usuario:
+        if "O" in fila:
+            break
+    else:
+        print("¡Perdiste!")
+        exit()
+
+def iniciar_juego():
+    tamaño = pedir_tamaño()
+    tablero_usuario = crear_tablero(tamaño)
+    tablero_maquina = crear_tablero(tamaño)
+    tablero_visual = crear_tablero()  
+    print("Crea tu flota:")
+    tablero_usuario = generacion_barcos()
+    print("La máquina está generando su flota...")
+    tablero_maquina = generacion_barcos_maquina()
+    print("\nEste es tu tablero:")
+    print(tablero_usuario)
+    print("\nEste es el tablero de la máquina (sin revelar barcos):")
+    print(tablero_visual)
+    print("Comienza a disparar")
+    return tablero_usuario,tablero_maquina,tablero_visual
  
