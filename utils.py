@@ -159,23 +159,22 @@ def pedir_coordenadas_maquina():
     coordenada = (fila,columna)
     return coordenada
 
-def disparar_maquina(tablero_usuario):
+def disparar_maquina(tablero_usuario,tablero_maquina):
     coordenada = pedir_coordenadas_maquina()
     if tablero_usuario[coordenada] == "O":
         print("Acertaste")
         tablero_usuario[coordenada] = "X"
         print(tablero_usuario)
-        resultado = "X"
-        return disparar_maquina(tablero_usuario)
+        return disparar_maquina(tablero_usuario,tablero_maquina),tablero_usuario
     else:
         print("Fallaste")
         tablero_usuario[coordenada]  = "A"
         print(tablero_usuario)
-        resultado = "A"
+        return disparar_general(tablero_maquina,tablero_usuario), tablero_usuario
     
-    return tablero_usuario,resultado
+    
 #------------------------------------------DISPAROS GENERAL----------------------------------------------------
-def disparar_general(tablero_maquina):
+def disparar_general(tablero_maquina,tablero_usuario):
     coordenada = pedir_coordenadas()
     if tablero_maquina[coordenada] == "O":
         print("Acertaste")
@@ -187,17 +186,15 @@ def disparar_general(tablero_maquina):
         tablero_visual[coordenada]  = "A"
         print(tablero_visual)
         resultado = "A"
-    juego_terminado()
+    juego_terminado(tablero_maquina,tablero_usuario)
     if resultado == "X":
-        return disparar_usuario()
+        return disparar_general(tablero_maquina,tablero_usuario)
     elif resultado == "A":
-        return disparar_maquina()
+        return disparar_maquina(tablero_usuario,tablero_maquina)
     return tablero_visual,resultado
 
 
-def juego_terminado():
-    tablero_maquina = generacion_barcos_maquina()
-    tablero_usuario = generacion_barcos()
+def juego_terminado(tablero_maquina,tablero_usuario):
     for fila in tablero_maquina:
         if "O" in fila:
             break
